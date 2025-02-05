@@ -1,0 +1,14 @@
+import React from 'react'
+
+const AppHeader = ({ toDo, done }) => {
+  return (
+    <div>
+      <h1>Todo List</h1>
+      <h2>
+        {toDo} more to do, {done} done
+      </h2>
+    </div>
+  )
+}
+
+export default AppHeader
