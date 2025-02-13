@@ -66,9 +66,11 @@ export default class App extends React.Component {
   }
 
   render() {
+    const doneCount = this.state.todoData.filter((el) => el.done).length
+    const todoCount = this.state.todoData.length
     return (
       <div>
-        <AppHeader toDo={1} done={3} />
+        <AppHeader toDo={todoCount} done={doneCount} />
         <div>
           <SearchPanel />
           <ItemStatusFilter />
