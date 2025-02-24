@@ -81,6 +81,10 @@ export default class App extends React.Component {
       this.setState({ term })
     }
 
+    this.onFilterChange = (filter) => {
+      this.setState({ filter })
+    }
+
     this.filter = (items, filter) => {
       switch (filter) {
         case 'all':
@@ -107,7 +111,7 @@ export default class App extends React.Component {
         <AppHeader toDo={todoCount} done={doneCount} />
         <div>
           <SearchPanel onSearchChange={this.onSearchChange} />
-          <ItemStatusFilter filter={filter} />
+          <ItemStatusFilter filter={filter} onFilterChange={this.onFilterChange} />
         </div>
         <TodoList
           todos={visibleItems}
