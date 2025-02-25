@@ -108,6 +108,7 @@ export default class App extends React.Component {
     const todoCount = todoData.length
     return (
       <div>
+        <h1>todos</h1>
         <AppHeader toDo={todoCount} done={doneCount} />
         <div>
           <SearchPanel onSearchChange={this.onSearchChange} />

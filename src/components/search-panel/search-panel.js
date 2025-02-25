@@ -16,6 +16,6 @@ export default class SearchPanel extends React.Component {
   }
 
   render() {
-    return <input type="text" placeholder="search" value={this.state.term} onChange={this.onSearchChange} />
+    return <input type="text" placeholder="search" value={this.state.term} onChange={this.onSearchChange} autoFocus />
   }
 }
