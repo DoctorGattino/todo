@@ -30,6 +30,7 @@ export default class ItemAddForm extends React.Component {
           onChange={this.onLabelChange}
           placeholder="Whats need to be done"
           value={this.state.label}
+          autoFocus
         />
         <button type="submit" className="btn btn-outline-secondary">
           Add Item
