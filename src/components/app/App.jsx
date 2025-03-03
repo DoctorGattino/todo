@@ -63,22 +63,6 @@ export default class App extends React.Component {
       })
     }
 
-    /* добавлю реализацию которая при лучшем стечении обстоятельств будет перебирать не весь массив в отличии от map, 
-    если какой-то психопат решит сделать todo на 100к элементов 
-    
-    this.editTask = (id) => {
-      this.setState(({ todoData }) => {
-        const idx = todoData.findIndex((el) => el.id === id)
-        if (idx === -1) {
-          return { todoData }
-        }
-        const oldTask = todoData[idx]
-        const newTask = { ...oldTask, editing: !oldTask.editing }
-        const newArr = todoData.toSpliced(idx, 1, newTask)
-        return { todoData: newArr }
-      })
-    }
-    */
     this.editTask = (id) => {
       this.setState(({ todoData }) => {
         return {
