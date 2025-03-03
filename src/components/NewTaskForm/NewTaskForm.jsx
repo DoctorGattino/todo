@@ -1,8 +1,8 @@
 import React from 'react'
 
-import './item-add-form.css'
+import './NewTaskForm.css'
 
-export default class ItemAddForm extends React.Component {
+export default class NewTaskForm extends React.Component {
   constructor() {
     super()
 
@@ -16,25 +16,26 @@ export default class ItemAddForm extends React.Component {
 
     this.onSubmit = (event) => {
       event.preventDefault()
-      this.props.addItem(this.state.label)
+      if (this.state.label.length !== 0) {
+        this.props.addItem(this.state.label)
+      } else {
+        alert('The line must not be empty')
+      }
       this.setState({ label: '' })
     }
   }
 
   render() {
     return (
-      <form className="item-add-form d-flex" onSubmit={this.onSubmit}>
+      <form onSubmit={this.onSubmit}>
         <input
           type="text"
-          className="form-control"
+          className="new-todo"
           onChange={this.onLabelChange}
-          placeholder="Whats need to be done"
+          placeholder="What needs to be done?"
           value={this.state.label}
           autoFocus
         />
-        <button type="submit" className="btn btn-outline-secondary">
-          Add Item
-        </button>
       </form>
     )
   }
