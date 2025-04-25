@@ -11,15 +11,20 @@ export default class App extends React.Component {
 
     this.maxId = 100
 
-    this.createTodoItem = (label) => {
-      return {
-        label: label,
-        completed: false,
-        id: this.maxId++,
-        date: new Date(),
-        editing: false,
-      }
-    }
+    this.createTodoItem = ({ label, min = 0, sec = 0 }) => ({
+      label,
+      id: this.maxId++,
+      completed: false,
+      date: new Date(),
+      editing: false,
+      timer: false,
+      minuteForTask: Number(min),
+      seconds: Number(sec),
+      minuteTens: '',
+      minute: '',
+      secondTens: '',
+      second: '',
+    })
 
     this.state = {
       todoData: [],
@@ -43,8 +48,8 @@ export default class App extends React.Component {
       })
     }
 
-    this.addItem = (text) => {
-      const newItem = this.createTodoItem(text)
+    this.addItem = ({ label, min, sec }) => {
+      const newItem = this.createTodoItem({ label, min, sec })
       this.setState(({ todoData }) => {
         return { todoData: [...todoData, newItem] }
       })
@@ -97,6 +102,78 @@ export default class App extends React.Component {
           return items
       }
     }
+
+    this.taskTimerState = (min, sec, id) => {
+      this.setState(({ todoData }) => {
+        const end = Date.now() + min * 60000 + sec * 1000
+        const now = Date.now()
+        const delta = end - now
+        const idx = todoData.findIndex((el) => el.id === id)
+        const oldTask = todoData[idx]
+        const newTask = {
+          ...oldTask,
+          minuteTens: Math.floor(delta / 600000),
+          minute: Math.floor((delta / 60000) % 10),
+          secondTens: Math.floor((delta % 60000) / 10000),
+          second: Math.floor(((delta % 60000) / 1000) % 10),
+        }
+        return {
+          todoData: [...todoData.slice(0, idx), newTask, ...todoData.slice(idx + 1)],
+        }
+      })
+    }
+
+    this.timerStart = (id) => {
+      this.setState(({ todoData }) => {
+        const idx = todoData.findIndex((el) => el.id === id)
+        const oldTask = todoData[idx]
+        const newTask = { ...oldTask, timer: !oldTask.timer }
+        return {
+          todoData: [...todoData.slice(0, idx), newTask, ...todoData.slice(idx + 1)],
+        }
+      })
+    }
+
+    this.timerEnd = (id) => {
+      this.setState(({ todoData }) => {
+        const idx = todoData.findIndex((el) => el.id === id)
+        const oldTask = todoData[idx]
+        const newTask = {
+          ...oldTask,
+          minuteForTask: 0,
+          seconds: 0,
+          timer: false,
+          minuteTens: 0,
+          minute: 0,
+          secondTens: 0,
+          second: 0,
+        }
+        return {
+          todoData: [...todoData.slice(0, idx), newTask, ...todoData.slice(idx + 1)],
+        }
+      })
+    }
+
+    this.changeTimerState = ([minTens, min, secTens, sec, id]) => {
+      const totalMin = minTens * 10 + min
+      const totalSec = secTens * 10 + sec
+      this.setState(({ todoData }) => {
+        const idx = todoData.findIndex((el) => el.id === id)
+        const oldTask = todoData[idx]
+        const newTask = {
+          ...oldTask,
+          minuteForTask: totalMin,
+          seconds: totalSec,
+          minuteTens: minTens,
+          minute: min,
+          secondTens: secTens,
+          second: sec,
+        }
+        return {
+          todoData: [...todoData.slice(0, idx), newTask, ...todoData.slice(idx + 1)],
+        }
+      })
+    }
   }
 
   render() {
@@ -116,6 +193,10 @@ export default class App extends React.Component {
             onToggleCompleted={this.onToggleCompleted}
             onEditTask={this.editTask}
             onEditTaskChange={this.editTaskChange}
+            onTaskTimerState={this.taskTimerState}
+            onTimerStart={this.timerStart}
+            onTimerEnd={this.timerEnd}
+            onChangeTimerState={this.changeTimerState}
           />
           <Footer
             toDo={todoCount}

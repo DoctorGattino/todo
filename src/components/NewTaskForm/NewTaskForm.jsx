@@ -8,34 +8,62 @@ export default class NewTaskForm extends React.Component {
 
     this.state = {
       label: '',
+      min: '',
+      sec: '',
     }
 
-    this.onLabelChange = (event) => {
-      this.setState({ label: event.target.value })
+    this.onInputChange = (event) => {
+      const { name, value } = event.target
+      this.setState({ [name]: value })
     }
 
     this.onSubmit = (event) => {
       event.preventDefault()
-      if (this.state.label.length !== 0) {
-        this.props.addItem(this.state.label)
+      const { label, min, sec } = this.state
+
+      if (label.trim() && min.trim() && sec.trim()) {
+        this.props.addItem({ label, min, sec })
+        this.setState({ label: '', min: '', sec: '' })
       } else {
-        alert('The line must not be empty')
+        alert('All fields must be filled')
       }
-      this.setState({ label: '' })
     }
   }
 
   render() {
+    const { label, min, sec } = this.state
     return (
-      <form onSubmit={this.onSubmit}>
+      <form onSubmit={this.onSubmit} className="new-todo-form">
         <input
+          name="label"
           type="text"
           className="new-todo"
-          onChange={this.onLabelChange}
+          onChange={this.onInputChange}
           placeholder="What needs to be done?"
-          value={this.state.label}
+          value={label}
           autoFocus
         />
+        <input
+          name="min"
+          type="number"
+          className="new-todo-form__timer"
+          placeholder="Min"
+          autoComplete="off"
+          onChange={this.onInputChange}
+          value={min}
+        />
+        <input
+          name="sec"
+          type="number"
+          className="new-todo-form__timer"
+          placeholder="Sec"
+          autoComplete="off"
+          onChange={this.onInputChange}
+          value={sec}
+          min={0}
+          max={60}
+        />
+        <button type="submit" />
       </form>
     )
   }
