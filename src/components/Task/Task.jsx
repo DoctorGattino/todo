@@ -10,20 +10,16 @@ const Task = ({
   editing,
   completed,
   date,
-  minuteTens,
-  minute,
-  secondTens,
-  second,
   id,
   onEditTaskChange,
-  onTaskTimerState,
-  onTimerStart,
   onTimerEnd,
-  onChangeTimerState,
   minuteForTask,
   secondsForTask,
 }) => {
   const [textTask, setTextTask] = useState('')
+  // Новый таймер: только секунды
+  const initialSeconds = (minuteForTask || 0) * 60 + (secondsForTask || 0)
+  const [timeLeft, setTimeLeft] = useState(initialSeconds)
   const intervalRef = useRef(null)
 
   const onTextChange = (event) => {
@@ -39,67 +35,45 @@ const Task = ({
     }
   }
 
-  const taskTimerPlay = () => {
-    const totalSeconds = (minuteTens * 10 + minute) * 60 + (secondTens * 10 + second)
-    const end = Date.now() + totalSeconds * 1000
+  // Форматирование времени
+  function formatTime(sec) {
+    const m = Math.floor(sec / 60)
+    const s = sec % 60
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+  }
 
+  // Старт
+  const startTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
     intervalRef.current = setInterval(() => {
-      const now = Date.now()
-      const delta = end - now
-
-      if (delta <= 0) {
-        clearInterval(intervalRef.current)
-        onTimerEnd(id)
-        return
-      }
-
-      const minTens = Math.floor(delta / 1000 / 60 / 10)
-      const min = Math.floor((delta / 1000 / 60) % 10)
-      const secTens = Math.floor((delta % 60000) / 10000)
-      const sec = Math.floor(((delta % 60000) / 1000) % 10)
-
-      onChangeTimerState([minTens, min, secTens, sec, id])
-    }, 500)
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current)
+          onTimerEnd && onTimerEnd(id)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
   }
 
-  const timerStart = () => {
-    onTimerStart(id)
-    taskTimerPlay()
+  // Пауза
+  const pauseTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
   }
 
-  const timerPause = () => {
-    clearInterval(intervalRef.current)
-    onTimerStart(id)
-  }
-
-  // Имитация componentDidMount
-  useEffect(() => {
-    // Инициализация таймера при монтировании компонента
-    if (onTaskTimerState && minuteForTask !== undefined && secondsForTask !== undefined) {
-      onTaskTimerState(minuteForTask, secondsForTask, id)
-    }
-  }, [])
-
-  // Имитация componentWillUnmount
+  // Очистка интервала при размонтировании
   useEffect(() => {
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current)
     }
   }, [])
 
   let classNames = ''
+  if (completed) classNames += ' completed'
+  if (editing) classNames += ' editing'
 
   const time = formatDistanceToNow(date, { includeSeconds: true })
-
-  if (completed) {
-    classNames += ' completed'
-  }
-
-  if (editing) {
-    classNames += ' editing'
-  }
 
   return (
     <li className={classNames}>
@@ -110,11 +84,9 @@ const Task = ({
             {label}
           </span>
           <span className="description span-data">
-            <button className="icon icon-play" onClick={timerStart}></button>
-            <button className="icon icon-pause" onClick={timerPause}></button>
-            {minuteTens}
-            {minute}:{secondTens}
-            {second}
+            <button className="icon icon-play" onClick={startTimer}></button>
+            <button className="icon icon-pause" onClick={pauseTimer}></button>
+            {formatTime(timeLeft)}
           </span>
           <span className="created">created {time} ago</span>
         </label>
