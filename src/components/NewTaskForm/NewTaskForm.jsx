@@ -1,70 +1,72 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 
 import './NewTaskForm.css'
+import TodoContext from '../../context/TodoContext'
 
-export default class NewTaskForm extends React.Component {
-  constructor() {
-    super()
+const NewTaskForm = () => {
+  const { addItem } = useContext(TodoContext)
+  const [label, setLabel] = useState('')
+  const [min, setMin] = useState('')
+  const [sec, setSec] = useState('')
 
-    this.state = {
-      label: '',
-      min: '',
-      sec: '',
-    }
-
-    this.onInputChange = (event) => {
-      const { name, value } = event.target
-      this.setState({ [name]: value })
-    }
-
-    this.onSubmit = (event) => {
-      event.preventDefault()
-      const { label, min, sec } = this.state
-
-      if (label.trim() && min.trim() && sec.trim()) {
-        this.props.addItem({ label, min, sec })
-        this.setState({ label: '', min: '', sec: '' })
-      } else {
-        alert('All fields must be filled')
-      }
+  const onInputChange = (event) => {
+    const { name, value } = event.target
+    if (name === 'label') {
+      setLabel(value)
+    } else if (name === 'min') {
+      setMin(value)
+    } else if (name === 'sec') {
+      setSec(value)
     }
   }
 
-  render() {
-    const { label, min, sec } = this.state
-    return (
-      <form onSubmit={this.onSubmit} className="new-todo-form">
-        <input
-          name="label"
-          type="text"
-          className="new-todo"
-          onChange={this.onInputChange}
-          placeholder="What needs to be done?"
-          value={label}
-          autoFocus
-        />
-        <input
-          name="min"
-          type="number"
-          className="new-todo-form__timer"
-          placeholder="Min"
-          autoComplete="off"
-          onChange={this.onInputChange}
-          value={min}
-        />
-        <input
-          name="sec"
-          type="number"
-          className="new-todo-form__timer"
-          placeholder="Sec"
-          autoComplete="off"
-          onChange={this.onInputChange}
-          value={sec}
-          min={0}
-          max={60}
-        />
-        <button type="submit" />
-      </form>
-    )
+  const onSubmit = (event) => {
+    event.preventDefault()
+
+    if (label.trim() && min.trim() && sec.trim()) {
+      addItem({ label, min, sec })
+      setLabel('')
+      setMin('')
+      setSec('')
+    } else {
+      alert('All fields must be filled')
+    }
   }
+
+  return (
+    <form onSubmit={onSubmit} className="new-todo-form">
+      <input
+        name="label"
+        type="text"
+        className="new-todo"
+        onChange={onInputChange}
+        placeholder="What needs to be done?"
+        value={label}
+        autoFocus
+      />
+      <input
+        name="min"
+        type="number"
+        className="new-todo-form__timer"
+        placeholder="Min"
+        autoComplete="off"
+        onChange={onInputChange}
+        value={min}
+      />
+      <input
+        name="sec"
+        type="number"
+        className="new-todo-form__timer"
+        placeholder="Sec"
+        autoComplete="off"
+        onChange={onInputChange}
+        value={sec}
+        min={0}
+        max={60}
+      />
+      <button type="submit" />
+    </form>
+  )
 }
+
+export default NewTaskForm

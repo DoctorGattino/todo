@@ -95,8 +95,6 @@ body {
   border-top: 1px solid #e6e6e6;
 }
 
-
-
 @media (max-width: 430px) {
   .footer {
     height: 50px;
@@ -117,4 +115,3 @@ body {
     height: 40px;
   }
 }
-

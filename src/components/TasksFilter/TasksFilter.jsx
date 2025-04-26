@@ -1,32 +1,30 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import './TasksFilter.css'
+import TodoContext from '../../context/TodoContext'
 
-export default class TasksFilter extends React.Component {
-  constructor() {
-    super()
-    this.buttons = [
-      { name: 'all', label: 'All' },
-      { name: 'active', label: 'Active' },
-      { name: 'completed', label: 'Completed' },
-    ]
-  }
+const TasksFilter = () => {
+  const { filter, onFilterChange } = useContext(TodoContext)
 
-  render() {
-    const { filter, onFilterChange } = this.props
+  const buttons = [
+    { name: 'all', label: 'All' },
+    { name: 'active', label: 'Active' },
+    { name: 'completed', label: 'Completed' },
+  ]
 
-    const buttons = this.buttons.map(({ name, label }) => {
-      const isActive = filter === name
-      const clazz = isActive ? 'selected' : ''
-      return (
-        <li key={name}>
-          <button type="button" className={`${clazz}`} onClick={() => onFilterChange(name)}>
-            {label}
-          </button>
-        </li>
-      )
-    })
+  const renderedButtons = buttons.map(({ name, label }) => {
+    const isActive = filter === name
+    const clazz = isActive ? 'selected' : ''
+    return (
+      <li key={name}>
+        <button type="button" className={`${clazz}`} onClick={() => onFilterChange(name)}>
+          {label}
+        </button>
+      </li>
+    )
+  })
 
-    return <ul className="filters">{buttons}</ul>
-  }
+  return <ul className="filters">{renderedButtons}</ul>
 }
+
+export default TasksFilter

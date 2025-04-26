@@ -1,18 +1,21 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './Footer.css'
 
 import TasksFilter from '../TasksFilter'
+import TodoContext from '../../context/TodoContext'
 
-const AppHeader = ({ toDo, onFilterChange, filter, onClearTasks }) => {
+const Footer = () => {
+  const { todoCount, deleteAllCompleted } = useContext(TodoContext)
+
   return (
     <footer className="footer">
-      <span className="todo-count">{toDo} items left</span>
-      <TasksFilter filter={filter} onFilterChange={onFilterChange} />
-      <button className="clear-completed" onClick={onClearTasks}>
+      <span className="todo-count">{todoCount} items left</span>
+      <TasksFilter />
+      <button className="clear-completed" onClick={deleteAllCompleted}>
         Clear completed
       </button>
     </footer>
   )
 }
 
-export default AppHeader
+export default Footer

@@ -1,20 +1,23 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import Task from '../Task'
 import './TaskList.css'
+import TodoContext from '../../context/TodoContext'
 
-const TaskList = ({
-  todos,
-  onDeleted,
-  onToggleCompleted,
-  onEditTask,
-  onEditTaskChange,
-  onTaskTimerState,
-  onTimerStart,
-  onTimerEnd,
-  onChangeTimerState,
-}) => {
-  const elements = todos.map((item) => {
+const TaskList = () => {
+  const {
+    visibleItems,
+    deleteItem,
+    onToggleCompleted,
+    editTask,
+    editTaskChange,
+    taskTimerState,
+    timerStart,
+    timerEnd,
+    changeTimerState,
+  } = useContext(TodoContext)
+
+  const elements = visibleItems.map((item) => {
     const {
       id,
       completed,
@@ -47,14 +50,14 @@ const TaskList = ({
           second={second}
           timer={timer}
           {...itemProps}
-          onDeleted={() => onDeleted(id)}
+          onDeleted={() => deleteItem(id)}
           onToggleCompleted={() => onToggleCompleted(id)}
-          onEditTask={() => onEditTask(id)}
-          onEditTaskChange={onEditTaskChange}
-          onTaskTimerState={onTaskTimerState}
-          onTimerStart={() => onTimerStart(id)}
-          onTimerEnd={onTimerEnd}
-          onChangeTimerState={onChangeTimerState}
+          onEditTask={() => editTask(id)}
+          onEditTaskChange={editTaskChange}
+          onTaskTimerState={taskTimerState}
+          onTimerStart={() => timerStart(id)}
+          onTimerEnd={timerEnd}
+          onChangeTimerState={changeTimerState}
         />
       </li>
     )
