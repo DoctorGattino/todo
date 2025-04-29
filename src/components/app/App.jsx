@@ -25,6 +25,7 @@ const App = () => {
       minute: '',
       secondTens: '',
       second: '',
+      timeLeft: (Number(min) || 0) * 60 + (Number(sec) || 0),
     }),
     []
   )
@@ -150,6 +151,16 @@ const App = () => {
     })
   }, [])
 
+  const updateTimeLeft = useCallback((id, newTimeLeft) => {
+    setTodoData((todoData) => {
+      const idx = todoData.findIndex((el) => el.id === id)
+      if (idx === -1) return todoData
+      const oldTask = todoData[idx]
+      const newTask = { ...oldTask, timeLeft: newTimeLeft }
+      return [...todoData.slice(0, idx), newTask, ...todoData.slice(idx + 1)]
+    })
+  }, [])
+
   const visibleItems = filterItems(todoData, filter)
   const todoCount = todoData.filter((el) => !el.completed).length
 
@@ -169,6 +180,7 @@ const App = () => {
     timerStart,
     timerEnd,
     changeTimerState,
+    updateTimeLeft,
   }
 
   return (

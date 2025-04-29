@@ -15,6 +15,7 @@ const TaskList = () => {
     timerStart,
     timerEnd,
     changeTimerState,
+    updateTimeLeft,
   } = useContext(TodoContext)
 
   const elements = visibleItems.map((item) => {
@@ -49,6 +50,8 @@ const TaskList = () => {
           secondTens={secondTens}
           second={second}
           timer={timer}
+          timeLeft={item.timeLeft}
+          updateTimeLeft={updateTimeLeft}
           {...itemProps}
           onDeleted={() => deleteItem(id)}
           onToggleCompleted={() => onToggleCompleted(id)}
